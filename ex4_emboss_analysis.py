@@ -1,0 +1,306 @@
+#!/usr/bin/env python3
+"""
+Ejercicio 4 - EMBOSS PROSITE Domain Analysis
+Analiza dominios de proteínas usando EMBOSS y la base de datos PROSITE.
+"""
+
+import os
+import subprocess
+import sys
+import urllib.request
+from pathlib import Path
+from Bio import SeqIO
+
+# URLs y rutas
+PROSITE_DAT_URL = "https://ftp.expasy.org/databases/prosite/prosite.dat"
+PROSITE_DOC_URL = "https://ftp.expasy.org/databases/prosite/prosite.doc"
+PROSITE_DAT = "prosite.dat"
+PROSITE_DOC = "prosite.doc"
+PROSITE_DIR = "prosite"
+INPUT_FASTA = "HBB_ORFs.fasta"
+OUTPUT_RESULTS = "HBB_domain_analysis.txt"
+
+
+def check_emboss_installed():
+    """Verifica si EMBOSS está instalado."""
+    try:
+        result = subprocess.run(
+            ["which", "embossversion"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        print("✅ EMBOSS está instalado")
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("❌ EMBOSS no está instalado")
+        print("\n📦 Para instalar EMBOSS:")
+        print("   macOS: brew install emboss")
+        print("   Linux: sudo apt-get install emboss")
+        print("   O descargar desde: https://emboss.sourceforge.net/")
+        return False
+
+
+def check_emboss_command(cmd):
+    """Verifica si un comando específico de EMBOSS está disponible."""
+    try:
+        subprocess.run(
+            [cmd, "-help"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+
+
+def download_prosite():
+    """Descarga la base de datos PROSITE si no existe."""
+    downloaded = True
+    
+    # Descargar prosite.dat
+    if not os.path.exists(PROSITE_DAT):
+        print(f"📥 Descargando PROSITE database (prosite.dat)...")
+        try:
+            urllib.request.urlretrieve(PROSITE_DAT_URL, PROSITE_DAT)
+            print(f"✅ prosite.dat descargado")
+        except Exception as e:
+            print(f"❌ Error al descargar prosite.dat: {e}")
+            downloaded = False
+    
+    # Descargar prosite.doc (necesario para prosextract)
+    if not os.path.exists(PROSITE_DOC):
+        print(f"📥 Descargando PROSITE documentation (prosite.doc)...")
+        try:
+            urllib.request.urlretrieve(PROSITE_DOC_URL, PROSITE_DOC)
+            print(f"✅ prosite.doc descargado")
+        except Exception as e:
+            print(f"⚠️  Error al descargar prosite.doc: {e}")
+            print("   prosextract puede fallar sin este archivo")
+    
+    return downloaded
+
+
+def extract_prosite():
+    """Prepara la base de datos PROSITE usando EMBOSS prosextract."""
+    if not check_emboss_command("prosextract"):
+        print("❌ Comando prosextract no disponible")
+        return False
+    
+    # Crear directorio prosite si no existe
+    os.makedirs(PROSITE_DIR, exist_ok=True)
+    
+    # Copiar archivos PROSITE al directorio prosite
+    import shutil
+    prosite_dat_path = os.path.join(PROSITE_DIR, PROSITE_DAT)
+    prosite_doc_path = os.path.join(PROSITE_DIR, PROSITE_DOC)
+    
+    if not os.path.exists(prosite_dat_path) and os.path.exists(PROSITE_DAT):
+        shutil.copy(PROSITE_DAT, prosite_dat_path)
+    
+    if not os.path.exists(prosite_doc_path) and os.path.exists(PROSITE_DOC):
+        shutil.copy(PROSITE_DOC, prosite_doc_path)
+    
+    # Verificar que los archivos necesarios estén presentes
+    if not os.path.exists(prosite_dat_path):
+        print("❌ prosite.dat no encontrado en el directorio prosite")
+        return False
+    
+    if not os.path.exists(prosite_doc_path):
+        print("⚠️  prosite.doc no encontrado - prosextract puede fallar")
+    
+    print("🔧 Preparando base de datos PROSITE con prosextract...")
+    try:
+        result = subprocess.run(
+            ["prosextract", "-prositedir", PROSITE_DIR],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        print("✅ Base de datos PROSITE preparada")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error al ejecutar prosextract: {e}")
+        print(f"Salida: {e.stdout}")
+        print(f"Error: {e.stderr}")
+        return False
+
+
+def analyze_domains(fasta_file, output_file):
+    """Analiza dominios de proteínas usando EMBOSS patmatmotifs."""
+    if not check_emboss_command("patmatmotifs"):
+        print("❌ Comando patmatmotifs no disponible")
+        return False
+    
+    print(f"🔍 Analizando dominios en {fasta_file}...")
+    
+    # Leer todas las secuencias del FASTA
+    sequences = list(SeqIO.parse(fasta_file, "fasta"))
+    
+    if not sequences:
+        print(f"❌ No se encontraron secuencias en {fasta_file}")
+        return False
+    
+    results = []
+    results.append("=" * 80)
+    results.append("ANÁLISIS DE DOMINIOS PROSITE - EMBOSS patmatmotifs")
+    results.append("=" * 80)
+    results.append(f"Archivo de entrada: {fasta_file}")
+    results.append(f"Número de secuencias: {len(sequences)}")
+    results.append("=" * 80)
+    results.append("")
+    
+    for seq_record in sequences:
+        seq_id = seq_record.id.replace('|', '_').replace('/', '_')
+        seq = str(seq_record.seq)
+        
+        results.append(f"\n{'=' * 80}")
+        results.append(f"Secuencia: {seq_record.id}")
+        results.append(f"Longitud: {len(seq)} aminoácidos")
+        results.append(f"{'=' * 80}")
+        
+        # Crear archivo temporal con una sola secuencia
+        temp_fasta = f"temp_{seq_id}.fasta"
+        patmat_file = f"temp_{seq_id}_patmat.txt"
+        
+        with open(temp_fasta, "w") as f:
+            SeqIO.write(seq_record, f, "fasta")
+        
+        try:
+            # Ejecutar patmatmotifs
+            # Nota: patmatmotifs NO acepta -prositedir, usa la base de datos del sistema
+            # Si necesitamos usar una base de datos local, debemos configurar el entorno
+            # Ejecutar patmatmotifs con opciones para obtener más información
+            # -full: documentación completa de los motivos
+            # -noprune: incluir patrones simples (modificaciones post-traduccionales)
+            cmd = [
+                "patmatmotifs",
+                "-sequence", temp_fasta,
+                "-outfile", patmat_file,
+                "-full",          # Obtener documentación completa
+                "-noprune"        # No ignorar patrones simples
+            ]
+            
+            env = os.environ.copy()
+            
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True,
+                env=env
+            )
+            
+            # Leer resultados
+            if os.path.exists(patmat_file):
+                with open(patmat_file, "r") as f:
+                    patmat_output = f.read()
+                    
+                    # Buscar información de dominios en el output
+                    lines = patmat_output.split('\n')
+                    domain_info = []
+                    hit_count = 0
+                    current_motif = None
+                    in_motif_section = False
+                    
+                    for i, line in enumerate(lines):
+                        line_stripped = line.strip()
+                        
+                        # Obtener HitCount
+                        if 'HitCount:' in line:
+                            hit_count = int(line.split('HitCount:')[1].strip())
+                        
+                        # Buscar secciones de motivos
+                        if 'Motif =' in line:
+                            current_motif = line.split('Motif =')[1].strip()
+                            in_motif_section = True
+                            domain_info.append(f"Motivo: {current_motif}")
+                        elif 'Length =' in line and in_motif_section:
+                            domain_info.append(f"  {line_stripped}")
+                        elif ('Start =' in line or 'End =' in line) and in_motif_section:
+                            domain_info.append(f"  {line_stripped}")
+                        elif line_stripped and not line_stripped.startswith('#') and in_motif_section:
+                            # Capturar secuencia del motivo si está presente
+                            if len(line_stripped) > 5 and not line_stripped.startswith('-'):
+                                if '|' in line_stripped or any(c.isalpha() for c in line_stripped):
+                                    domain_info.append(f"  {line_stripped}")
+                        elif '---' in line and in_motif_section:
+                            in_motif_section = False
+                    
+                    # Verificar si hay dominios encontrados
+                    if hit_count == 0 or not domain_info:
+                        results.append("❌ No se encontraron dominios PROSITE")
+                    else:
+                        results.append(f"✅ Dominios encontrados: {hit_count} motivo(s)")
+                        for info in domain_info:
+                            results.append(f"  {info}")
+            else:
+                results.append("⚠️ No se generó archivo de resultados")
+                # Mostrar salida estándar si hay
+                if result.stdout:
+                    results.append(f"Salida: {result.stdout[:500]}")
+            
+            # Limpiar archivos temporales
+            if os.path.exists(temp_fasta):
+                os.remove(temp_fasta)
+            if os.path.exists(patmat_file):
+                os.remove(patmat_file)
+                
+        except subprocess.CalledProcessError as e:
+            results.append(f"❌ Error al analizar {seq_record.id}")
+            if e.stderr:
+                results.append(f"Error: {e.stderr[:200]}")
+            # Limpiar archivos temporales
+            if os.path.exists(temp_fasta):
+                os.remove(temp_fasta)
+            if os.path.exists(patmat_file):
+                os.remove(patmat_file)
+    
+    # Escribir resultados
+    with open(output_file, "w") as f:
+        f.write("\n".join(results))
+    
+    print(f"✅ Resultados guardados en: {output_file}")
+    return True
+
+
+def main():
+    """Función principal."""
+    print("=" * 80)
+    print("EJERCICIO 4 - EMBOSS PROSITE Domain Analysis")
+    print("=" * 80)
+    print()
+    
+    # Verificar EMBOSS
+    if not check_emboss_installed():
+        sys.exit(1)
+    
+    # Verificar archivo de entrada
+    if not os.path.exists(INPUT_FASTA):
+        print(f"❌ Archivo de entrada no encontrado: {INPUT_FASTA}")
+        print("   Ejecuta primero el Ejercicio 1 para generar este archivo.")
+        sys.exit(1)
+    
+    # Descargar PROSITE
+    if not download_prosite():
+        sys.exit(1)
+    
+    # Preparar PROSITE
+    if not extract_prosite():
+        print("⚠️ Continuando sin prosextract (puede que funcione de todas formas)...")
+    
+    # Analizar dominios
+    if not analyze_domains(INPUT_FASTA, OUTPUT_RESULTS):
+        sys.exit(1)
+    
+    print()
+    print("=" * 80)
+    print("✅ ANÁLISIS COMPLETADO")
+    print("=" * 80)
+    print(f"📄 Resultados guardados en: {OUTPUT_RESULTS}")
+
+
+if __name__ == "__main__":
+    main()
+

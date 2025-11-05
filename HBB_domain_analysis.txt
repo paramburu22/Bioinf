@@ -1,0 +1,296 @@
+================================================================================
+ANÁLISIS DE DOMINIOS PROSITE - EMBOSS patmatmotifs
+================================================================================
+Archivo de entrada: HBB_ORFs.fasta
+Número de secuencias: 6
+================================================================================
+
+
+================================================================================
+Secuencia: NM_000518.5_frame1
+Longitud: 209 aminoácidos
+================================================================================
+✅ Dominios encontrados: 6 motivo(s)
+  Motivo: CAMP_PHOSPHO_SITE
+    XRLMARKCSVPLVM
+    Length = 3
+    Start = position 184 of sequence
+    End = position 186 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    CSLSPTTKLGDIM
+    Length = 3
+    Start = position 98 of sequence
+    End = position 100 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    WLTWTTSRAPLPH
+    Length = 3
+    Start = position 75 of sequence
+    End = position 77 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    MLLWATLRXRLMA
+    Length = 6
+    Start = position 122 of sequence
+    End = position 127 of sequence
+  Motivo: MYRISTYL
+    ILRTSGSWATCWSVCW
+    |    |
+    Length = 6
+    Start = position 48 of sequence
+    End = position 53 of sequence
+  Motivo: MYRISTYL
+    VRPWAGCWWSTLGPRG
+    |    |
+
+================================================================================
+Secuencia: NM_000518.5_frame2
+Longitud: 209 aminoácidos
+================================================================================
+✅ Dominios encontrados: 10 motivo(s)
+  Motivo: PKC_PHOSPHO_SITE
+    SCCPISIKGSFVP
+    Length = 3
+    Start = position 84 of sequence
+    End = position 86 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    GSWQESARCLXXW
+    Length = 3
+    Start = position 13 of sequence
+    End = position 15 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    CSLATSNRHHGAS
+    Length = 4
+    Start = position 80 of sequence
+    End = position 83 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    PXGEGSWQESARCL
+    Length = 6
+    Start = position 151 of sequence
+    End = position 156 of sequence
+  Motivo: MYRISTYL
+    CLSESGGWCGXCPGPQ
+    |    |
+    Length = 6
+    Start = position 124 of sequence
+    End = position 129 of sequence
+  Motivo: MYRISTYL
+    ELQAPGQRAGLCAGPS
+    |    |
+    Length = 6
+    Start = position 96 of sequence
+    End = position 101 of sequence
+  Motivo: MYRISTYL
+    WPGSPGQPQGHLCHTE
+    |    |
+    Length = 6
+    Start = position 64 of sequence
+    End = position 69 of sequence
+  Motivo: MYRISTYL
+    LXVLWGSVHSXCCYGQ
+    |    |
+    Length = 6
+    Start = position 46 of sequence
+    End = position 51 of sequence
+  Motivo: MYRISTYL
+    WWXGPGQAAGGLPLDP
+    |    |
+    Length = 6
+    Start = position 18 of sequence
+    End = position 23 of sequence
+  Motivo: MYRISTYL
+    SNRHHGASDSXGEVCR
+    |    |
+
+================================================================================
+Secuencia: NM_000518.5_frame3
+Longitud: 208 aminoácidos
+================================================================================
+✅ Dominios encontrados: 8 motivo(s)
+  Motivo: PKC_PHOSPHO_SITE
+    VVYPWTQRFFESF
+    Length = 4
+    Start = position 104 of sequence
+    End = position 107 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    KGTFATLSELHCDK
+    Length = 4
+    Start = position 66 of sequence
+    End = position 69 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    SFGDLSTPDAVMGN
+    Length = 4
+    Start = position 61 of sequence
+    End = position 64 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    QRFFESFGDLSTPD
+    Length = 4
+    Start = position 21 of sequence
+    End = position 24 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    TMVHLTPEEKSAVT
+    Length = 6
+    Start = position 153 of sequence
+    End = position 158 of sequence
+  Motivo: MYRISTYL
+    QKVVAGVANALAHKYH
+    |    |
+    Length = 6
+    Start = position 100 of sequence
+    End = position 105 of sequence
+  Motivo: MYRISTYL
+    LDNLKGTFATLSELHC
+    |    |
+    Length = 4
+    Start = position 80 of sequence
+    End = position 83 of sequence
+  Motivo: AMIDATION
+    PKVKAHGKKVLGAF
+
+================================================================================
+Secuencia: NM_000518.5_frame4
+Longitud: 209 aminoácidos
+================================================================================
+✅ Dominios encontrados: 13 motivo(s)
+  Motivo: ASN_GLYCOSYLATION
+    GTFNRNWTARKRAX
+    Length = 3
+    Start = position 146 of sequence
+    End = position 148 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    SGVDRSPKDSKNL
+    Length = 3
+    Start = position 120 of sequence
+    End = position 122 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    RXARPSLKAPSTF
+    Length = 3
+    Start = position 88 of sequence
+    End = position 90 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    STLPRSLKFSGST
+    Length = 3
+    Start = position 40 of sequence
+    End = position 42 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    FNRNWTARKRAXX
+    Length = 4
+    Start = position 146 of sequence
+    End = position 149 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    SGVDRSPKDSKNLW
+    Length = 4
+    Start = position 141 of sequence
+    End = position 144 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    LPITASGVDRSPKD
+    Length = 6
+    Start = position 188 of sequence
+    End = position 193 of sequence
+  Motivo: MYRISTYL
+    ADFSSGVRCTMVSVXG
+    |    |
+    Length = 6
+    Start = position 157 of sequence
+    End = position 162 of sequence
+  Motivo: MYRISTYL
+    NLWVQGXTTSSLPRAS
+    |    |
+    Length = 6
+    Start = position 135 of sequence
+    End = position 140 of sequence
+  Motivo: MYRISTYL
+    XAFTLGLPITASGVDR
+    |    |
+    Length = 6
+    Start = position 93 of sequence
+    End = position 98 of sequence
+  Motivo: MYRISTYL
+    SLKFSGSTCSLSQCSS
+    |    |
+    Length = 6
+    Start = position 68 of sequence
+    End = position 73 of sequence
+  Motivo: MYRISTYL
+    XAACTGGVNSLPKXWA
+    |    |
+    Length = 6
+    Start = position 30 of sequence
+    End = position 35 of sequence
+  Motivo: MYRISTYL
+    XXLDLGNKGTFNRNWT
+    |    |
+
+================================================================================
+Secuencia: NM_000518.5_frame5
+Longitud: 209 aminoácidos
+================================================================================
+✅ Dominios encontrados: 7 motivo(s)
+  Motivo: PKC_PHOSPHO_SITE
+    TDPQRTQRTSGSK
+    Length = 3
+    Start = position 61 of sequence
+    End = position 63 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    HQPPLSDRQPALV
+    Length = 4
+    Start = position 185 of sequence
+    End = position 188 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    QXRQTSPQESDAPW
+    Length = 4
+    Start = position 127 of sequence
+    End = position 130 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    RHRALSCHEPSPXG
+    Length = 4
+    Start = position 90 of sequence
+    End = position 93 of sequence
+  Motivo: CK2_PHOSPHO_SITE
+    CPGAXSSQDPRAAC
+    Length = 6
+    Start = position 69 of sequence
+    End = position 74 of sequence
+  Motivo: MYRISTYL
+    QPALVGXILCQSDGPA
+    |    |
+    Length = 6
+    Start = position 39 of sequence
+    End = position 44 of sequence
+  Motivo: MYRISTYL
+    PLIEIGQQESELSDTC
+    |    |
+
+================================================================================
+Secuencia: NM_000518.5_frame6
+Longitud: 208 aminoácidos
+================================================================================
+✅ Dominios encontrados: 6 motivo(s)
+  Motivo: CAMP_PHOSPHO_SITE
+    XKLDSKKASLVILV
+    Length = 3
+    Start = position 139 of sequence
+    End = position 141 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    RVAHNSIRSGQIP
+    Length = 3
+    Start = position 40 of sequence
+    End = position 42 of sequence
+  Motivo: PKC_PHOSPHO_SITE
+    XXKLDSKKASLVI
+    Length = 6
+    Start = position 165 of sequence
+    End = position 170 of sequence
+  Motivo: MYRISTYL
+    QQPAQGLTTNFIHVHL
+    |    |
+    Length = 6
+    Start = position 52 of sequence
+    End = position 57 of sequence
+  Motivo: MYRISTYL
+    ILVGQGISHTSHHFLI
+    |    |
+    Length = 6
+    Start = position 50 of sequence
+    End = position 55 of sequence
+  Motivo: MYRISTYL
+    LVILVGQGISHTSHHF
+    |    |
