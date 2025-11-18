@@ -46,12 +46,12 @@ Los primers deben cumplir con los siguientes criterios:
 ### 1. Entrada
 
 #### Archivo GenBank
-- **Archivo**: `HBB_NM000518.gb`
+- **Archivo**: `data/raw/hbb_nm000518.gb`
 - **Contenido**: Secuencia del transcript HBB (NM_000518) en formato GenBank
 - **Longitud**: 628 bp (ARN mensajero)
 
-#### Archivo de Configuración
-- **Archivo**: `primer_config.json`
+- **Archivo de Configuración**
+- **Archivo**: `config/primer_design.json`
 - **Formato**: JSON
 - **Parámetros**:
   ```json
@@ -117,7 +117,7 @@ Primeros 2: AT ✓ (no tiene G/C)
 ### 3. Salida
 
 #### Archivo FASTA
-- **Archivo**: `HBB_primers.fasta`
+- **Archivo**: `data/results/ex05/hbb_primers.fasta`
 - **Formato**: FASTA estándar
 - **Contenido**: 5 primers con sus identificadores
 
@@ -134,7 +134,7 @@ Primeros 2: AT ✓ (no tiene G/C)
 
 ### Estructura del Archivo de Salida
 
-El archivo `HBB_primers.fasta` contiene:
+El archivo `data/results/ex05/hbb_primers.fasta` contiene:
 
 ```
 >Primer_1_NM_000518.5_pos448-468
@@ -207,7 +207,7 @@ Tm = 64.9 + 41 × (GC_count - 16.4) / length
 
 ## Parámetros de Configuración
 
-### Archivo `primer_config.json`
+### Archivo `config/primer_design.json`
 
 ```json
 {
@@ -237,21 +237,21 @@ Puedes modificar estos parámetros según tus necesidades:
 
 ```bash
 # Opción 1: Usar el script de instalación y ejecución
-./run_ex5.sh
+./scripts/run_ex5.sh
 
 # Opción 2: Ejecutar directamente
-python ex5_primer_design.py
+python3 src/exercises/ex05_primer_design.py
 ```
 
 ### Requisitos
 
 - **Python 3.x** con Biopython
-- **Archivo GenBank**: `HBB_NM000518.gb`
-- **Archivo de configuración**: `primer_config.json` (se crea automáticamente si no existe)
+- **Archivo GenBank**: `data/raw/hbb_nm000518.gb`
+- **Archivo de configuración**: `config/primer_design.json` (se crea automáticamente si no existe)
 
 ### Archivos Generados
 
-1. **`HBB_primers.fasta`**: Archivo FASTA con los 5 primers diseñados
+1. **`data/results/ex05/hbb_primers.fasta`**: Archivo FASTA con los 5 primers diseñados
 2. **Salida en consola**: Información detallada de cada primer
 
 ## Importancia Biológica

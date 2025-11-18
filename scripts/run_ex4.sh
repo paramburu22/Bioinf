@@ -3,6 +3,17 @@
 
 # No usar set -e para permitir manejo de errores de instalación
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "$PROJECT_ROOT"
+
+DATA_INTERIM_DIR="data/interim"
+RESULTS_EX04="data/results/ex04"
+INPUT_FASTA="${DATA_INTERIM_DIR}/hbb_orfs.fasta"
+OUTPUT_FILE="${RESULTS_EX04}/hbb_domain_analysis.txt"
+EX1_SCRIPT="src/exercises/ex01_generate_orfs.py"
+EX4_SCRIPT="src/exercises/ex04_emboss_prosite.py"
+
 echo "================================================================================"
 echo "EJERCICIO 4 - Instalación y Ejecución"
 echo "================================================================================"
@@ -21,21 +32,21 @@ command_exists() {
 
 # 1. Verificar Python
 echo "1. Verificando Python..."
-if ! command_exists python; then
-    echo -e "${RED}❌ python no está instalado${NC}"
-    echo "Instala python desde python.org o con: brew install python"
+if ! command_exists python3; then
+    echo -e "${RED}❌ python3 no está instalado${NC}"
+    echo "Instala python3 desde python.org o con: brew install python"
     exit 1
 fi
-PYTHON_VERSION=$(python --version)
+PYTHON_VERSION=$(python3 --version)
 echo -e "${GREEN}✅ Python encontrado: $PYTHON_VERSION${NC}"
 echo ""
 
 # 2. Verificar e instalar Biopython
 echo "2. Verificando Biopython..."
-if ! python -c "import Bio" 2>/dev/null; then
+if ! python3 -c "import Bio" 2>/dev/null; then
     echo -e "${YELLOW}⚠️  Biopython no está instalado${NC}"
     echo "Instalando Biopython..."
-    pip install biopython
+    pip3 install biopython
     echo -e "${GREEN}✅ Biopython instalado${NC}"
 else
     echo -e "${GREEN}✅ Biopython ya está instalado${NC}"
@@ -87,14 +98,14 @@ if ! command_exists embossversion; then
             echo "   O desde GitHub: https://github.com/emboss-dev/emboss"
             echo ""
             echo "3. Usar el script de instalación automática:"
-            echo "   ./install_emboss.sh"
+            echo "   ./scripts/install_emboss.sh"
             echo ""
             echo -e "${YELLOW}════════════════════════════════════════════════════════════════════════════${NC}"
             echo -e "${YELLOW}EMBOSS es necesario para ejecutar el Ejercicio 4.${NC}"
             echo ""
             echo "Instalación recomendada:"
-            echo "  1. Ejecuta: ./install_emboss.sh"
-            echo "  2. Luego ejecuta este script nuevamente: ./run_ex4.sh"
+            echo "  1. Ejecuta: ./scripts/install_emboss.sh"
+            echo "  2. Luego ejecuta este script nuevamente: ./scripts/run_ex4.sh"
             echo ""
             echo -e "${YELLOW}O instala manualmente con conda:${NC}"
             echo "  conda install -c bioconda emboss"
@@ -133,22 +144,22 @@ echo ""
 
 # 4. Verificar archivo de entrada del Ejercicio 1
 echo "4. Verificando archivo de entrada..."
-if [ ! -f "HBB_ORFs.fasta" ]; then
-    echo -e "${YELLOW}⚠️  Archivo HBB_ORFs.fasta no encontrado${NC}"
+if [ ! -f "$INPUT_FASTA" ]; then
+    echo -e "${YELLOW}⚠️  Archivo ${INPUT_FASTA} no encontrado${NC}"
     echo "Ejecutando Ejercicio 1 para generarlo..."
-    if [ -f "ex1.py" ]; then
-        python ex1.py
-        if [ ! -f "HBB_ORFs.fasta" ]; then
-            echo -e "${RED}❌ Error al generar HBB_ORFs.fasta${NC}"
+    if [ -f "$EX1_SCRIPT" ]; then
+        python3 "$EX1_SCRIPT"
+        if [ ! -f "$INPUT_FASTA" ]; then
+            echo -e "${RED}❌ Error al generar ${INPUT_FASTA}${NC}"
             exit 1
         fi
-        echo -e "${GREEN}✅ Archivo HBB_ORFs.fasta generado${NC}"
+        echo -e "${GREEN}✅ Archivo ${INPUT_FASTA} generado${NC}"
     else
-        echo -e "${RED}❌ Archivo ex1.py no encontrado${NC}"
+        echo -e "${RED}❌ Script ${EX1_SCRIPT} no encontrado${NC}"
         exit 1
     fi
 else
-    echo -e "${GREEN}✅ Archivo HBB_ORFs.fasta encontrado${NC}"
+    echo -e "${GREEN}✅ Archivo ${INPUT_FASTA} encontrado${NC}"
 fi
 echo ""
 
@@ -158,11 +169,11 @@ echo "5. Ejecutando Ejercicio 4..."
 echo "================================================================================"
 echo ""
 
-python ex4_emboss_analysis.py
+python3 "$EX4_SCRIPT"
 
 echo ""
 echo "================================================================================"
 echo -e "${GREEN}✅ EJERCICIO 4 COMPLETADO${NC}"
 echo "================================================================================"
-echo "Resultados guardados en: HBB_domain_analysis.txt"
+echo "Resultados guardados en: ${OUTPUT_FILE}"
 

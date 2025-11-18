@@ -6,14 +6,18 @@ Diseña primers para el transcript HBB (NM_000518) según parámetros de configu
 
 import json
 import sys
+from pathlib import Path
+
 from Bio import SeqIO
 from Bio.SeqUtils import gc_fraction
 from Bio.SeqUtils import MeltingTemp as mt
 
-# Archivos
-GENBANK_FILE = "HBB_NM000518.gb"
-CONFIG_FILE = "primer_config.json"
-OUTPUT_FASTA = "HBB_primers.fasta"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA_RAW = PROJECT_ROOT / "data" / "raw"
+RESULTS_DIR = PROJECT_ROOT / "data" / "results" / "ex05"
+GENBANK_FILE = DATA_RAW / "hbb_nm000518.gb"
+CONFIG_FILE = PROJECT_ROOT / "config" / "primer_design.json"
+OUTPUT_FASTA = RESULTS_DIR / "hbb_primers.fasta"
 
 
 def load_config(config_file):
@@ -179,6 +183,7 @@ def print_results(primers, transcript_id):
 
 def save_primers_fasta(primers, transcript_id, output_file):
     """Guarda los primers en formato FASTA."""
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     with open(output_file, "w") as f:
         for i, primer in enumerate(primers, 1):
             f.write(f">Primer_{i}_{transcript_id}_pos{primer['start']}-{primer['end']}\n")

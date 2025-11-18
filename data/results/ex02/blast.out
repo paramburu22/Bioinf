@@ -1,0 +1,157 @@
+# ===== Resultado BLAST para NM_000518.5_frame1 =====
+<p><!--
+QBlastInfoBegin
+	Status=READY
+QBlastInfoEnd
+--><p>
+<PRE>
+
+BLASTP 2.17.0+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro
+A. Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and
+David J. Lipman (1997), "Gapped BLAST and PSI-BLAST: a new
+generation of protein database search programs", Nucleic
+Acids Res. 25:3389-3402.
+
+
+Reference for compositional score matrix adjustment: Stephen
+F. Altschul, John C. Wootton, E. Michael Gertz, Richa
+Agarwala, Aleksandr Morgulis, Alejandro A. Schaffer, and
+Yi-Kuo Yu (2005) "Protein database searches using
+compositionally adjusted substitution matrices", FEBS J.
+272:5101-5109.
+
+
+RID: HTU15U4F016
+
+
+Database: Non-redundant UniProtKB/SwissProt sequences
+           485,662 sequences; 184,977,373 total letters
+
+Query= 
+Length=209
+
+
+<b>No significant similarity found.</b> For reasons why, <A HREF = "Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ"><b>click here</A>.</b><br><br>
+  Database: Non-redundant UniProtKB/SwissProt sequences
+    Posted date:  Nov 17, 2025  4:39 AM
+  Number of letters in database: 184,977,373
+  Number of sequences in database:  485,662
+
+Lambda      K        H
+   0.343    0.146    0.590 
+Gapped
+Lambda      K        H
+   0.267   0.0410    0.140 
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Sequences: 485662
+Number of Hits to DB: 194890
+Number of extensions: 238
+Number of successful extensions: 42
+Number of sequences better than 100: 0
+Number of HSP's better than 100 without gapping: 0
+Number of HSP's gapped: 42
+Number of HSP's successfully gapped: 0
+Length of query: 209
+Length of database: 184977373
+Length adjustment: 112
+Effective length of query: 97
+Effective length of database: 130583229
+Effective search space: 12666573213
+Effective search space used: 12666573213
+T: 20
+A: 40
+X1: 15 (7.4 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 38 (19.2 bits)
+S2: 58 (26.9 bits)
+ka-blk-alpha gapped: 1.9
+ka-blk-alpha ungapped: 0.7916
+ka-blk-alpha_v gapped: 42.6028
+ka-blk-alpha_v ungapped: 4.96466
+ka-blk-sigma gapped: 43.6362
+
+
+
+
+# ===== Resultado BLAST para NM_000518.5_frame2 =====
+<p><!--
+QBlastInfoBegin
+	Status=READY
+QBlastInfoEnd
+--><p>
+<PRE>
+
+BLASTP 2.17.0+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro
+A. Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and
+David J. Lipman (1997), "Gapped BLAST and PSI-BLAST: a new
+generation of protein database search programs", Nucleic
+Acids Res. 25:3389-3402.
+
+
+Reference for compositional score matrix adjustment: Stephen
+F. Altschul, John C. Wootton, E. Michael Gertz, Richa
+Agarwala, Aleksandr Morgulis, Alejandro A. Schaffer, and
+Yi-Kuo Yu (2005) "Protein database searches using
+compositionally adjusted substitution matrices", FEBS J.
+272:5101-5109.
+
+
+RID: HTUSXPBA016
+
+
+Database: Non-redundant UniProtKB/SwissProt sequences
+           485,662 sequences; 184,977,373 total letters
+
+Query= 
+Length=209
+
+
+<b>No significant similarity found.</b> For reasons why, <A HREF = "Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs&DOC_TYPE=FAQ"><b>click here</A>.</b><br><br>
+  Database: Non-redundant UniProtKB/SwissProt sequences
+    Posted date:  Nov 17, 2025  4:39 AM
+  Number of letters in database: 184,977,373
+  Number of sequences in database:  485,662
+
+Lambda      K        H
+   0.350    0.156    0.636 
+Gapped
+Lambda      K        H
+   0.267   0.0410    0.140 
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Number of Sequences: 485662
+Number of Hits to DB: 186010
+Number of extensions: 210
+Number of successful extensions: 23
+Number of sequences better than 100: 4
+Number of HSP's better than 100 without gapping: 0
+Number of HSP's gapped: 23
+Number of HSP's successfully gapped: 4
+Length of query: 209
+Length of database: 184977373
+Length adjustment: 112
+Effective length of query: 97
+Effective length of database: 130583229
+Effective search space: 12666573213
+Effective search space used: 12666573213
+T: 20
+A: 40
+X1: 14 (7.1 bits)
+X2: 38 (14.6 bits)
+X3: 64 (24.7 bits)
+S1: 38 (19.2 bits)
+S2: 58 (26.9 bits)
+ka-blk-alpha gapped: 1.9
+ka-blk-alpha ungapped: 0.7916
+ka-blk-alpha_v gapped: 42.6028
+ka-blk-alpha_v ungapped: 4.96466
+ka-blk-sigma gapped: 43.6362
+
+
+
+
+# ===== Resultado BLAST para NM_000518.5_frame3 =====

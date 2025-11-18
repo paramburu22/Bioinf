@@ -3,6 +3,15 @@
 
 set -e  # Salir si hay error
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "$PROJECT_ROOT"
+
+GENBANK_FILE="data/raw/hbb_nm000518.gb"
+CONFIG_FILE="config/primer_design.json"
+RESULTS_FASTA="data/results/ex05/hbb_primers.fasta"
+EX5_SCRIPT="src/exercises/ex05_primer_design.py"
+
 echo "================================================================================"
 echo "EJERCICIO 5 - Instalación y Ejecución"
 echo "================================================================================"
@@ -21,18 +30,18 @@ command_exists() {
 
 # 1. Verificar Python
 echo "1. Verificando Python..."
-if ! command_exists python; then
-    echo -e "${RED}❌ python no está instalado${NC}"
-    echo "Instala python desde python.org o con: brew install python"
+if ! command_exists python3; then
+    echo -e "${RED}❌ python3 no está instalado${NC}"
+    echo "Instala python3 desde python.org o con: brew install python"
     exit 1
 fi
-PYTHON_VERSION=$(python --version)
+PYTHON_VERSION=$(python3 --version)
 echo -e "${GREEN}✅ Python encontrado: $PYTHON_VERSION${NC}"
 echo ""
 
 # 2. Verificar e instalar Biopython
 echo "2. Verificando Biopython..."
-if ! python -c "import Bio" 2>/dev/null; then
+if ! python3 -c "import Bio" 2>/dev/null; then
     echo -e "${YELLOW}⚠️  Biopython no está instalado${NC}"
     echo "Instalando Biopython..."
     pip3 install biopython
@@ -44,21 +53,22 @@ echo ""
 
 # 3. Verificar archivo GenBank
 echo "3. Verificando archivo GenBank..."
-if [ ! -f "HBB_NM000518.gb" ]; then
-    echo -e "${RED}❌ Archivo HBB_NM000518.gb no encontrado${NC}"
+if [ ! -f "$GENBANK_FILE" ]; then
+    echo -e "${RED}❌ Archivo ${GENBANK_FILE} no encontrado${NC}"
     echo "Este archivo es necesario para extraer la secuencia del transcript."
     exit 1
 else
-    echo -e "${GREEN}✅ Archivo HBB_NM000518.gb encontrado${NC}"
+    echo -e "${GREEN}✅ Archivo ${GENBANK_FILE} encontrado${NC}"
 fi
 echo ""
 
 # 4. Verificar archivo de configuración
 echo "4. Verificando archivo de configuración..."
-if [ ! -f "primer_config.json" ]; then
-    echo -e "${YELLOW}⚠️  Archivo primer_config.json no encontrado${NC}"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo -e "${YELLOW}⚠️  Archivo ${CONFIG_FILE} no encontrado${NC}"
     echo "Creando archivo de configuración por defecto..."
-    cat > primer_config.json << 'EOF'
+    mkdir -p "$(dirname "$CONFIG_FILE")"
+    cat > "$CONFIG_FILE" << 'EOF'
 {
   "min_length": 18,
   "max_length": 24,
@@ -70,9 +80,9 @@ if [ ! -f "primer_config.json" ]; then
   "terminal_positions": 2
 }
 EOF
-    echo -e "${GREEN}✅ Archivo primer_config.json creado${NC}"
+    echo -e "${GREEN}✅ Archivo ${CONFIG_FILE} creado${NC}"
 else
-    echo -e "${GREEN}✅ Archivo primer_config.json encontrado${NC}"
+    echo -e "${GREEN}✅ Archivo ${CONFIG_FILE} encontrado${NC}"
 fi
 echo ""
 
@@ -82,11 +92,11 @@ echo "5. Ejecutando Ejercicio 5..."
 echo "================================================================================"
 echo ""
 
-python ex5_primer_design.py
+python3 "$EX5_SCRIPT"
 
 echo ""
 echo "================================================================================"
 echo -e "${GREEN}✅ EJERCICIO 5 COMPLETADO${NC}"
 echo "================================================================================"
-echo "Resultados guardados en: HBB_primers.fasta"
+echo "Resultados guardados en: ${RESULTS_FASTA}"
 

@@ -3,6 +3,10 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 echo "================================================================================"
 echo "Instalación de EMBOSS para macOS"
 echo "================================================================================"
@@ -138,7 +142,7 @@ if command_exists embossversion; then
     echo -e "${GREEN}✅ EMBOSS verificado: $EMBOSS_VERSION${NC}"
     echo ""
     echo "Ahora puedes ejecutar el Ejercicio 4:"
-    echo "  ./run_ex4.sh"
+    echo "  ./scripts/run_ex4.sh"
 else
     echo -e "${YELLOW}⚠️  EMBOSS instalado pero no está en el PATH${NC}"
     echo "Intenta reiniciar tu terminal o ejecutar:"

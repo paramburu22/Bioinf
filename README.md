@@ -1,131 +1,129 @@
 # Bioinf - Trabajo Práctico
 
-Repositorio para ejercicios de Bioinformática.
+Repositorio con los scripts, datos y documentación del TP de Bioinformática enfocado en el gen **HBB**. Todo el material fue normalizado para facilitar la ejecución de los ejercicios y la revisión del código.
 
-## Estructura del Proyecto
+---
 
-- `ex1.py` - Ejercicio 1: Generación de ORFs desde GenBank
-- `ex2.py` - Ejercicio 2: Análisis BLAST
-- `ex4_emboss_analysis.py` - Ejercicio 4: Análisis de dominios PROSITE con EMBOSS
-- `ex5_primer_design.py` - Ejercicio 5: Diseño parametrizable de primers
-- `run_ex4.sh` - Script de instalación y ejecución del Ejercicio 4
-- `run_ex5.sh` - Script de instalación y ejecución del Ejercicio 5
-- `install_emboss.sh` - Script auxiliar para instalar EMBOSS con conda/bioconda
-- `primer_config.json` - Archivo de configuración para diseño de primers
+## 📁 Estructura
 
-## Requisitos Previos
-
-### Para el Ejercicio 4:
-- Python 3.x
-- Biopython
-- EMBOSS
-
-### Para el Ejercicio 5:
-- Python 3.x
-- Biopython
-
-## Instalación y Ejecución
-
-### Ejercicio 4 - Análisis EMBOSS PROSITE
-
-**IMPORTANTE:** EMBOSS no está disponible en Homebrew para macOS. Se recomienda usar conda/bioconda.
-
-#### Opción 1: Instalación automática con conda (RECOMENDADO)
-
-```bash
-# Si tienes conda instalado:
-conda install -c bioconda emboss
-
-# Si no tienes conda, usa el script de instalación:
-./install_emboss.sh
+```
+Bioinf/
+├── config/                     # Archivos de configuración (JSON, etc.)
+├── data/
+│   ├── raw/                    # Datos fuente (GenBank, etc.)
+│   ├── interim/                # Productos intermedios (ORFs, CDS, ...)
+│   ├── results/
+│   │   ├── ex02/               # Resultados del BLAST remoto
+│   │   ├── ex03/               # Insumos/resultados del MSA
+│   │   ├── ex04/               # Reportes EMBOSS / PROSITE
+│   │   └── ex05/               # Primers generados
+│   └── external/prosite/       # Bases de datos descargadas
+├── docs/                       # Material para la exposición del TP
+├── scripts/                    # Wrappers Bash para cada ejercicio
+├── src/
+│   ├── exercises/              # Scripts Python principales (ex01..ex05)
+│   └── utils/                  # Utilidades y ayudas
+└── README.md
 ```
 
-Luego ejecuta el ejercicio:
+---
 
-```bash
-./run_ex4.sh
-```
+## ⚙️ Configuración Inicial
 
-#### Opción 2: Instalación manual
+1. **Dependencias Python**
+   ```bash
+   pip3 install -r requirements.txt
+   ```
 
-```bash
-# Instalar dependencias Python
-pip install biopython
+2. **EMBOSS (para Ej. 4)**
+   - Usar Conda / Bioconda o el helper `scripts/install_emboss.sh` si trabajas en macOS.
 
-# Instalar EMBOSS (requiere conda):
-conda install -c bioconda emboss
+---
 
-# O desde la fuente:
-# Descargar desde: https://emboss.sourceforge.net/download/
-# O desde GitHub: https://github.com/emboss-dev/emboss
+## 🧪 Ejercicios
 
-# Ejecutar ejercicio
-python ex4_emboss_analysis.py
-```
+### Ejercicio 1 – ORFs desde GenBank
+- Script: `src/exercises/ex01_generate_orfs.py`
+- Input: `data/raw/hbb_nm000518.gb`
+- Output: `data/interim/hbb_orfs.fasta`
+- Ejecución:
+  ```bash
+  python3 src/exercises/ex01_generate_orfs.py
+  ```
 
-**Nota:** En Linux, EMBOSS puede instalarse con:
-```bash
-sudo apt-get install emboss  # Debian/Ubuntu
-# o
-sudo yum install emboss      # RHEL/CentOS
-```
+### Ejercicio 2 – BLAST remoto + parser
+- Script BLAST: `src/exercises/ex02_blast_remote.py`
+- Parser opcional: `src/exercises/ex02_blast_parser.py`
+- Input: `data/interim/hbb_orfs.fasta`
+- Output principal: `data/results/ex02/blast_hbb_remote.xml`
+- Ejemplo:
+  ```bash
+  python3 src/exercises/ex02_blast_remote.py --hitlist-size 15
+  python3 src/exercises/ex02_blast_parser.py --results-dir data/results/ex02
+  ```
 
-**Output:** `HBB_domain_analysis.txt` - Archivo con resultados del análisis de dominios PROSITE.
+### Ejercicio 3 – MSA con Biopython
+- Script Bash: `scripts/run_ex3.sh`
+- Script Python: `src/exercises/ex03_msa.py`
+- Inputs:
+  - `data/interim/hbb_correct_orf.fasta` (generado con `src/utils/extract_correct_orf.py`)
+  - `data/results/ex02/blast_hbb_remote.xml`
+- Salidas: `data/results/ex03/{msa_input.fasta, msa_alignment.fasta, msa_summary.txt}`
+- Ejecución:
+  ```bash
+  # ENTREZ_EMAIL es obligatorio (argumento o variable de entorno)
+  ./scripts/run_ex3.sh tu_email@institucion.edu --top 12
+  ```
 
-### Ejercicio 5 - Diseño de Primers
+### Ejercicio 4 – PROSITE / EMBOSS
+- Script Bash: `scripts/run_ex4.sh`
+- Script Python: `src/exercises/ex04_emboss_prosite.py`
+- Inputs: `data/interim/hbb_orfs.fasta` + base PROSITE en `data/external/prosite`
+- Output: `data/results/ex04/hbb_domain_analysis.txt`
+- Ejecuta:
+  ```bash
+  ./scripts/run_ex4.sh
+  ```
 
-El script `run_ex5.sh` instala automáticamente todas las dependencias y ejecuta el ejercicio:
+### Ejercicio 5 – Diseño de primers
+- Script Bash: `scripts/run_ex5.sh`
+- Script Python: `src/exercises/ex05_primer_design.py`
+- Inputs:
+  - `data/raw/hbb_nm000518.gb`
+  - `config/primer_design.json` (se crea automáticamente si no existe)
+- Output: `data/results/ex05/hbb_primers.fasta`
+- Manual:
+  ```bash
+  python3 src/exercises/ex05_primer_design.py
+  ```
 
-```bash
-./run_ex5.sh
-```
+---
 
-O manualmente:
+## 📂 Datos Clave
 
-```bash
-# Instalar dependencias
-pip install biopython
+| Archivo/Directorio                             | Descripción                                |
+|------------------------------------------------|--------------------------------------------|
+| `data/raw/hbb_nm000518.gb`                     | GenBank del transcript HBB (NM_000518)     |
+| `data/interim/hbb_orfs.fasta`                  | ORFs de los seis marcos (Ej.1)             |
+| `data/interim/hbb_correct_orf.fasta`           | CDS traducida (marco correcto)             |
+| `data/results/ex02/blast_hbb_remote.xml`       | BLASTP vs SwissProt (Ej.2)                 |
+| `data/results/ex03/msa_summary.txt`            | Informe del alineamiento múltiple          |
+| `data/results/ex04/hbb_domain_analysis.txt`    | Reporte PROSITE / EMBOSS                   |
+| `data/results/ex05/hbb_primers.fasta`          | FASTA con los primers seleccionados        |
 
-# Ejecutar ejercicio
-python ex5_primer_design.py
-```
+---
 
-**Output:** 
-- `HBB_primers.fasta` - Archivo FASTA con los 5 primers diseñados
-- Resultados en consola con detalles de cada primer
+## 📚 Documentación Complementaria
 
-### Configuración del Ejercicio 5
+- `docs/exercise03_overview.md`: resumen del pipeline MSA + hallazgos.
+- `docs/exercise04_overview.md`: procedimiento y resultados EMBOSS.
+- `docs/exercise05_overview.md`: criterios de diseño de primers.
+- `docs/exercise06_research.md`: notas de la investigación bibliográfica.
 
-El archivo `primer_config.json` contiene los parámetros de diseño:
+---
 
-```json
-{
-  "min_length": 18,
-  "max_length": 24,
-  "min_gc": 50,
-  "max_gc": 60,
-  "max_tm": 67,
-  "num_primers": 5,
-  "avoid_terminal_gc": true,
-  "terminal_positions": 2
-}
-```
+## 🗒️ Notas finales
 
-## Archivos de Entrada
-
-- `HBB_NM000518.gb` - Archivo GenBank con el transcript HBB
-- `HBB_ORFs.fasta` - Output del Ejercicio 1 (generado automáticamente si no existe)
-
-## Dependencias
-
-Instalar todas las dependencias:
-
-```bash
-pip3 install -r requirements.txt
-```
-
-## Notas
-
-- El Ejercicio 4 requiere que el Ejercicio 1 haya sido ejecutado previamente para generar `HBB_ORFs.fasta`
-- El Ejercicio 5 requiere el archivo `HBB_NM000518.gb` para extraer la secuencia del transcript
-- Los scripts de instalación detectan automáticamente el sistema operativo (macOS/Linux)
+- Todos los scripts usan rutas relativas al **root del repositorio**, por lo que conviene ejecutar los comandos desde `Bioinf/` (los wrappers Bash ya lo hacen).
+- Para reutilizar el pipeline con otro gen, basta con reemplazar los datos en `data/raw` y ajustar los parámetros de cada script/JSON.
+- Cualquier salida adicional debería guardarse dentro de `data/results/<ejercicio>` para mantener la estructura ordenada.

@@ -1,0 +1,33 @@
+Ejercicio 3 - Multiple Sequence Alignment (HBB)
+Generado: 2025-11-18 19:08:49
+======================================================================
+
+Top hits obtenidos del BLAST (Ejercicio 2):
+ 1. P68871       E=6.06e-105  ID=100.00% len=147  RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain; Contains: RecName: Full=LVV-hemorphin-7; Contains: RecName: Full=Spinorphin [Homo sapiens] >sp|P68872.2| RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain [Pan paniscus] >sp|P68873.2| RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain [Pan troglodytes]
+ 2. P02024       E=2.21e-104  ID=99.32% len=147  RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain [Gorilla gorilla gorilla]
+ 3. P02025       E=5.73e-102  ID=98.63% len=146  RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain [Hylobates lar]
+ 4. P02032       E=4.96e-101  ID=97.26% len=146  RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain [Semnopithecus entellus]
+ 5. P19885       E=6.40e-101  ID=95.92% len=147  RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain [Colobus polykomos]
+
+Resultado del alineamiento (Biopython pairwise-star MSA):
+- Secuencias alineadas: 6
+- Longitud del alineamiento: 147 aa
+- Posiciones 100% conservadas: 141 (95.9%)
+- Posiciones ≥80% conservadas: 142 (96.6%)
+
+Identidad contra la secuencia de consulta (desde el MSA):
+- sp|P68871.2|HBB_HUMAN 100.00%   sp|P68871.2|HBB_HUMAN RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain; Contains: RecName: Full=LVV-hemorphin-7; Contains: RecName: Full=Spinorphin
+- sp|P02024.2|HBB_GORGO 99.32%   sp|P02024.2|HBB_GORGO RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain
+- sp|P02025.1|HBB_HYLLA 98.63%   sp|P02025.1|HBB_HYLLA RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain
+- sp|P02032.1|HBB_SEMEN 97.26%   sp|P02032.1|HBB_SEMEN RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain
+- sp|P19885.2|HBB_COLPO 95.92%   sp|P19885.2|HBB_COLPO RecName: Full=Hemoglobin subunit beta; AltName: Full=Beta-globin; AltName: Full=Hemoglobin beta chain
+
+Consenso (umbral 70%):
+MVHLTPEEKXAVTALWGKVNVDEVGGEALGRLLVVYPWTQRFFESFGDLSXPDAVMGNPK
+VKAHGKKVLGAFSDGLAHLDNLKGTFAXLSELHCDKLHVDPENFXLLGNVLVCVLAHHFG
+KEFTPXVQAAYQKVVAGVANALAHKYH
+
+Interpretación automática:
+* Las secuencias recuperadas corresponden mayormente a hemoglobinas y globinas cercanas, con identidades promedio 98.2% respecto a la beta-globina humana.
+* Más de la mitad del alineamiento mantiene ≥80% conservación, lo cual resalta la preservación de los residuos críticos para el plegamiento tipo globina.
+* El consenso conserva la histidina proximal y distal clave para la unión del grupo hemo, lo que refuerza la funcionalidad compartida.

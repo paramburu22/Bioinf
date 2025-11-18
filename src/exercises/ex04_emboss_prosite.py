@@ -9,16 +9,23 @@ import subprocess
 import sys
 import urllib.request
 from pathlib import Path
+
 from Bio import SeqIO
 
 # URLs y rutas
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA_DIR = PROJECT_ROOT / "data"
+DATA_INTERIM = DATA_DIR / "interim"
+RESULTS_DIR = DATA_DIR / "results" / "ex04"
+TEMP_DIR = RESULTS_DIR / "tmp"
+EXTERNAL_DATA = DATA_DIR / "external" / "prosite"
+PROSITE_WORKDIR = EXTERNAL_DATA / "emboss_db" / "prosite_db"
 PROSITE_DAT_URL = "https://ftp.expasy.org/databases/prosite/prosite.dat"
 PROSITE_DOC_URL = "https://ftp.expasy.org/databases/prosite/prosite.doc"
-PROSITE_DAT = "prosite.dat"
-PROSITE_DOC = "prosite.doc"
-PROSITE_DIR = "prosite"
-INPUT_FASTA = "HBB_ORFs.fasta"
-OUTPUT_RESULTS = "HBB_domain_analysis.txt"
+PROSITE_DAT = EXTERNAL_DATA / "prosite.dat"
+PROSITE_DOC = EXTERNAL_DATA / "prosite.doc"
+INPUT_FASTA = DATA_INTERIM / "hbb_orfs.fasta"
+OUTPUT_RESULTS = RESULTS_DIR / "hbb_domain_analysis.txt"
 
 
 def check_emboss_installed():
@@ -58,27 +65,26 @@ def check_emboss_command(cmd):
 def download_prosite():
     """Descarga la base de datos PROSITE si no existe."""
     downloaded = True
-    
-    # Descargar prosite.dat
-    if not os.path.exists(PROSITE_DAT):
-        print(f"📥 Descargando PROSITE database (prosite.dat)...")
+    EXTERNAL_DATA.mkdir(parents=True, exist_ok=True)
+
+    if not PROSITE_DAT.exists():
+        print("📥 Descargando PROSITE database (prosite.dat)...")
         try:
             urllib.request.urlretrieve(PROSITE_DAT_URL, PROSITE_DAT)
-            print(f"✅ prosite.dat descargado")
-        except Exception as e:
-            print(f"❌ Error al descargar prosite.dat: {e}")
+            print("✅ prosite.dat descargado")
+        except Exception as exc:  # pylint: disable=broad-except
+            print(f"❌ Error al descargar prosite.dat: {exc}")
             downloaded = False
-    
-    # Descargar prosite.doc (necesario para prosextract)
-    if not os.path.exists(PROSITE_DOC):
-        print(f"📥 Descargando PROSITE documentation (prosite.doc)...")
+
+    if not PROSITE_DOC.exists():
+        print("📥 Descargando PROSITE documentation (prosite.doc)...")
         try:
             urllib.request.urlretrieve(PROSITE_DOC_URL, PROSITE_DOC)
-            print(f"✅ prosite.doc descargado")
-        except Exception as e:
-            print(f"⚠️  Error al descargar prosite.doc: {e}")
+            print("✅ prosite.doc descargado")
+        except Exception as exc:  # pylint: disable=broad-except
+            print(f"⚠️  Error al descargar prosite.doc: {exc}")
             print("   prosextract puede fallar sin este archivo")
-    
+
     return downloaded
 
 
@@ -87,47 +93,45 @@ def extract_prosite():
     if not check_emboss_command("prosextract"):
         print("❌ Comando prosextract no disponible")
         return False
-    
-    # Crear directorio prosite si no existe
-    os.makedirs(PROSITE_DIR, exist_ok=True)
-    
-    # Copiar archivos PROSITE al directorio prosite
+
+    PROSITE_WORKDIR.parent.mkdir(parents=True, exist_ok=True)
+    PROSITE_WORKDIR.mkdir(parents=True, exist_ok=True)
+
     import shutil
-    prosite_dat_path = os.path.join(PROSITE_DIR, PROSITE_DAT)
-    prosite_doc_path = os.path.join(PROSITE_DIR, PROSITE_DOC)
-    
-    if not os.path.exists(prosite_dat_path) and os.path.exists(PROSITE_DAT):
-        shutil.copy(PROSITE_DAT, prosite_dat_path)
-    
-    if not os.path.exists(prosite_doc_path) and os.path.exists(PROSITE_DOC):
-        shutil.copy(PROSITE_DOC, prosite_doc_path)
-    
-    # Verificar que los archivos necesarios estén presentes
-    if not os.path.exists(prosite_dat_path):
-        print("❌ prosite.dat no encontrado en el directorio prosite")
+
+    work_dat = PROSITE_WORKDIR / "prosite.dat"
+    work_doc = PROSITE_WORKDIR / "prosite.doc"
+
+    if PROSITE_DAT.exists():
+        shutil.copy2(PROSITE_DAT, work_dat)
+    if PROSITE_DOC.exists():
+        shutil.copy2(PROSITE_DOC, work_doc)
+
+    if not work_dat.exists():
+        print(f"❌ prosite.dat no encontrado en {work_dat}")
         return False
-    
-    if not os.path.exists(prosite_doc_path):
+
+    if not work_doc.exists():
         print("⚠️  prosite.doc no encontrado - prosextract puede fallar")
-    
-    print("🔧 Preparando base de datos PROSITE con prosextract...")
+
+    print(f"🔧 Preparando base de datos PROSITE con prosextract en {PROSITE_WORKDIR}...")
     try:
-        result = subprocess.run(
-            ["prosextract", "-prositedir", PROSITE_DIR],
+        subprocess.run(
+            ["prosextract", "-prositedir", str(PROSITE_WORKDIR)],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
         print("✅ Base de datos PROSITE preparada")
         return True
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Error al ejecutar prosextract: {e}")
-        print(f"Salida: {e.stdout}")
-        print(f"Error: {e.stderr}")
+    except subprocess.CalledProcessError as exc:
+        print(f"❌ Error al ejecutar prosextract: {exc}")
+        print(f"Salida: {exc.stdout}")
+        print(f"Error: {exc.stderr}")
         return False
 
 
-def analyze_domains(fasta_file, output_file):
+def analyze_domains(fasta_file: Path, output_file: Path):
     """Analiza dominios de proteínas usando EMBOSS patmatmotifs."""
     if not check_emboss_command("patmatmotifs"):
         print("❌ Comando patmatmotifs no disponible")
@@ -161,8 +165,9 @@ def analyze_domains(fasta_file, output_file):
         results.append(f"{'=' * 80}")
         
         # Crear archivo temporal con una sola secuencia
-        temp_fasta = f"temp_{seq_id}.fasta"
-        patmat_file = f"temp_{seq_id}_patmat.txt"
+        TEMP_DIR.mkdir(parents=True, exist_ok=True)
+        temp_fasta = TEMP_DIR / f"{seq_id}.fasta"
+        patmat_file = TEMP_DIR / f"{seq_id}_patmat.txt"
         
         with open(temp_fasta, "w") as f:
             SeqIO.write(seq_record, f, "fasta")
@@ -176,10 +181,10 @@ def analyze_domains(fasta_file, output_file):
             # -noprune: incluir patrones simples (modificaciones post-traduccionales)
             cmd = [
                 "patmatmotifs",
-                "-sequence", temp_fasta,
-                "-outfile", patmat_file,
-                "-full",          # Obtener documentación completa
-                "-noprune"        # No ignorar patrones simples
+                "-sequence", str(temp_fasta),
+                "-outfile", str(patmat_file),
+                "-full",
+                "-noprune",
             ]
             
             env = os.environ.copy()
@@ -193,7 +198,7 @@ def analyze_domains(fasta_file, output_file):
             )
             
             # Leer resultados
-            if os.path.exists(patmat_file):
+            if patmat_file.exists():
                 with open(patmat_file, "r") as f:
                     patmat_output = f.read()
                     
@@ -242,22 +247,22 @@ def analyze_domains(fasta_file, output_file):
                     results.append(f"Salida: {result.stdout[:500]}")
             
             # Limpiar archivos temporales
-            if os.path.exists(temp_fasta):
-                os.remove(temp_fasta)
-            if os.path.exists(patmat_file):
-                os.remove(patmat_file)
+            if temp_fasta.exists():
+                temp_fasta.unlink()
+            if patmat_file.exists():
+                patmat_file.unlink()
                 
         except subprocess.CalledProcessError as e:
             results.append(f"❌ Error al analizar {seq_record.id}")
             if e.stderr:
                 results.append(f"Error: {e.stderr[:200]}")
-            # Limpiar archivos temporales
-            if os.path.exists(temp_fasta):
-                os.remove(temp_fasta)
-            if os.path.exists(patmat_file):
-                os.remove(patmat_file)
+            if temp_fasta.exists():
+                temp_fasta.unlink(missing_ok=True)
+            if patmat_file.exists():
+                patmat_file.unlink(missing_ok=True)
     
     # Escribir resultados
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     with open(output_file, "w") as f:
         f.write("\n".join(results))
     
@@ -277,7 +282,7 @@ def main():
         sys.exit(1)
     
     # Verificar archivo de entrada
-    if not os.path.exists(INPUT_FASTA):
+    if not INPUT_FASTA.exists():
         print(f"❌ Archivo de entrada no encontrado: {INPUT_FASTA}")
         print("   Ejecuta primero el Ejercicio 1 para generar este archivo.")
         sys.exit(1)

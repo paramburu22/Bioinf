@@ -20,15 +20,15 @@ EMBOSS (European Molecular Biology Open Software Suite) es un conjunto de herram
 ## Flujo del Ejercicio 4
 
 ### 1. Entrada: Archivo FASTA de Proteínas
-- **Archivo**: `HBB_ORFs.fasta` (generado en el Ejercicio 1)
+- **Archivo**: `data/interim/hbb_orfs.fasta` (generado en el Ejercicio 1)
 - **Contenido**: 6 secuencias de proteínas (6 marcos de lectura)
 - **Origen**: Traducción de las 6 lecturas posibles del transcript HBB
 
 ### 2. Proceso de Análisis
 
 #### Paso 1: Descarga de Base de Datos PROSITE
-- Se descarga `prosite.dat` (patrones PROSITE)
-- Se descarga `prosite.doc` (documentación, necesaria para `prosextract`)
+- Se descarga `data/external/prosite/prosite.dat` (patrones PROSITE)
+- Se descarga `data/external/prosite/prosite.doc` (documentación, necesaria para `prosextract`)
 
 #### Paso 2: Preparación de la Base de Datos
 - Se ejecuta `prosextract` para preparar la base de datos PROSITE
@@ -42,14 +42,14 @@ EMBOSS (European Molecular Biology Open Software Suite) es un conjunto de herram
   - Se buscan todos los motivos PROSITE que coinciden con la secuencia
 
 ### 3. Salida: Archivo de Resultados
-- **Archivo**: `HBB_domain_analysis.txt`
+- **Archivo**: `data/results/ex04/hbb_domain_analysis.txt`
 - **Formato**: Texto con análisis detallado de cada secuencia
 
 ## Explicación de los Resultados
 
 ### Estructura del Archivo de Resultados
 
-El archivo `HBB_domain_analysis.txt` contiene:
+El archivo `data/results/ex04/hbb_domain_analysis.txt` contiene:
 
 1. **Encabezado**: Información general del análisis
    - Archivo de entrada
@@ -141,7 +141,7 @@ PKVKAHGKKVLGAF
 
 ```bash
 # Opción 1: Usar el script de instalación y ejecución
-./run_ex4.sh
+./scripts/run_ex4.sh
 
 # Opción 2: Ejecutar directamente
 python ex4_emboss_analysis.py
@@ -151,11 +151,11 @@ python ex4_emboss_analysis.py
 
 - **Python 3.x** con Biopython
 - **EMBOSS** instalado (se puede instalar con conda: `conda install -c bioconda emboss`)
-- **Archivo de entrada**: `HBB_ORFs.fasta` (generado por el Ejercicio 1)
+- **Archivo de entrada**: `data/interim/hbb_orfs.fasta` (generado por el Ejercicio 1)
 
 ### Archivos Generados
 
-1. **`HBB_domain_analysis.txt`**: Resultados del análisis de dominios
+1. **`data/results/ex04/hbb_domain_analysis.txt`**: Resultados del análisis de dominios
 2. **`prosite.dat`**: Base de datos PROSITE (descargada automáticamente)
 3. **`prosite.doc`**: Documentación PROSITE (descargada automáticamente)
 4. **`prosite/`**: Directorio con base de datos preparada por `prosextract`
@@ -190,5 +190,5 @@ El Ejercicio 4 demuestra cómo:
 - Interpretar resultados de análisis de secuencias de proteínas
 - Relacionar patrones de secuencia con función biológica
 
-El archivo `HBB_domain_analysis.txt` contiene un análisis completo de dominios PROSITE en las secuencias de proteínas del Ejercicio 1, identificando 50 motivos en total distribuidos en las 6 secuencias analizadas.
+El archivo `data/results/ex04/hbb_domain_analysis.txt` contiene un análisis completo de dominios PROSITE en las secuencias de proteínas del Ejercicio 1, identificando 50 motivos en total distribuidos en las 6 secuencias analizadas.
 
