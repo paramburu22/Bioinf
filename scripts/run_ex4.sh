@@ -7,6 +7,17 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+PIP_BIN="${PIP_BIN:-pip3}"
+if [ -n "$VIRTUAL_ENV" ]; then
+    if [ -x "$VIRTUAL_ENV/bin/python" ]; then
+        PYTHON_BIN="$VIRTUAL_ENV/bin/python"
+    fi
+    if [ -x "$VIRTUAL_ENV/bin/pip" ]; then
+        PIP_BIN="$VIRTUAL_ENV/bin/pip"
+    fi
+fi
+
 DATA_INTERIM_DIR="data/interim"
 RESULTS_EX04="data/results/ex04"
 INPUT_FASTA="${DATA_INTERIM_DIR}/hbb_orfs.fasta"
@@ -32,21 +43,21 @@ command_exists() {
 
 # 1. Verificar Python
 echo "1. Verificando Python..."
-if ! command_exists python3; then
-    echo -e "${RED}❌ python3 no está instalado${NC}"
-    echo "Instala python3 desde python.org o con: brew install python"
+if ! command_exists "$PYTHON_BIN"; then
+    echo -e "${RED}❌ Python no está disponible (${PYTHON_BIN})${NC}"
+    echo "Define PYTHON_BIN o activa tu entorno virtual antes de correr este script."
     exit 1
 fi
-PYTHON_VERSION=$(python3 --version)
-echo -e "${GREEN}✅ Python encontrado: $PYTHON_VERSION${NC}"
+PYTHON_VERSION=$("$PYTHON_BIN" --version)
+echo -e "${GREEN}✅ Python encontrado: $PYTHON_VERSION (${PYTHON_BIN})${NC}"
 echo ""
 
 # 2. Verificar e instalar Biopython
 echo "2. Verificando Biopython..."
-if ! python3 -c "import Bio" 2>/dev/null; then
+if ! "$PYTHON_BIN" -c "import Bio" 2>/dev/null; then
     echo -e "${YELLOW}⚠️  Biopython no está instalado${NC}"
     echo "Instalando Biopython..."
-    pip3 install biopython
+    "$PIP_BIN" install biopython
     echo -e "${GREEN}✅ Biopython instalado${NC}"
 else
     echo -e "${GREEN}✅ Biopython ya está instalado${NC}"
@@ -148,7 +159,7 @@ if [ ! -f "$INPUT_FASTA" ]; then
     echo -e "${YELLOW}⚠️  Archivo ${INPUT_FASTA} no encontrado${NC}"
     echo "Ejecutando Ejercicio 1 para generarlo..."
     if [ -f "$EX1_SCRIPT" ]; then
-        python3 "$EX1_SCRIPT"
+        "$PYTHON_BIN" "$EX1_SCRIPT"
         if [ ! -f "$INPUT_FASTA" ]; then
             echo -e "${RED}❌ Error al generar ${INPUT_FASTA}${NC}"
             exit 1
@@ -169,7 +180,11 @@ echo "5. Ejecutando Ejercicio 4..."
 echo "================================================================================"
 echo ""
 
-python3 "$EX4_SCRIPT"
+if ! "$PYTHON_BIN" "$EX4_SCRIPT"; then
+    echo ""
+    echo -e "${RED}❌ Error al ejecutar ${EX4_SCRIPT}${NC}"
+    exit 1
+fi
 
 echo ""
 echo "================================================================================"

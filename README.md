@@ -35,8 +35,21 @@ Bioinf/
    pip3 install -r requirements.txt
    ```
 
-2. **EMBOSS (para Ej. 4)**
-   - Usar Conda / Bioconda o el helper `scripts/install_emboss.sh` si trabajas en macOS.
+2. **EMBOSS + PROSITE (para Ej. 4)**
+   - Instala EMBOSS con alguna de estas opciones:
+     - `conda install -c bioconda emboss`
+     - `brew install emboss`
+     - `./scripts/install_emboss.sh` (automatiza el flujo en macOS)
+   - **No hace falta bajar la base PROSITE a mano**: la primera vez que ejecutes `./scripts/run_ex4.sh`, el script descargará automáticamente `prosite.dat` y `prosite.doc` en `data/external/prosite/`.
+   - Una vez descargados esos archivos (puede ser tras el primer intento del script), procesá PROSITE con `prosextract` para evitar errores de permisos de la instalación global de EMBOSS:
+     ```bash
+     cd /Users/gayba/Documents/ITBA/Bioinf
+     mkdir -p data/external/prosite/emboss_db/PROSITE
+     export PATH=$HOME/miniconda3/bin:$PATH        # o donde esté emboss
+     export EMBOSS_DATA="$PWD/data/external/prosite/emboss_db"
+     export PROSITE="$PWD/data/external/prosite/emboss_db/PROSITE"
+     prosextract -prositedir "$PROSITE"
+     ```
 
 ---
 
@@ -84,6 +97,7 @@ Bioinf/
   ```bash
   ./scripts/run_ex4.sh
   ```
+- Asegurate de haber corrido `prosextract` como se describe en la sección de configuración; el script aborta si la base PROSITE no está preparada.
 
 ### Ejercicio 5 – Diseño de primers
 - Script Bash: `scripts/run_ex5.sh`

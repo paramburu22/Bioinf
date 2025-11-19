@@ -19,13 +19,32 @@ DATA_INTERIM = DATA_DIR / "interim"
 RESULTS_DIR = DATA_DIR / "results" / "ex04"
 TEMP_DIR = RESULTS_DIR / "tmp"
 EXTERNAL_DATA = DATA_DIR / "external" / "prosite"
-PROSITE_WORKDIR = EXTERNAL_DATA / "emboss_db" / "prosite_db"
+EMBOSS_DATA_DIR = EXTERNAL_DATA / "emboss_db"
+PROSITE_WORKDIR = EMBOSS_DATA_DIR / "PROSITE"
 PROSITE_DAT_URL = "https://ftp.expasy.org/databases/prosite/prosite.dat"
 PROSITE_DOC_URL = "https://ftp.expasy.org/databases/prosite/prosite.doc"
 PROSITE_DAT = EXTERNAL_DATA / "prosite.dat"
 PROSITE_DOC = EXTERNAL_DATA / "prosite.doc"
 INPUT_FASTA = DATA_INTERIM / "hbb_orfs.fasta"
 OUTPUT_RESULTS = RESULTS_DIR / "hbb_domain_analysis.txt"
+EMBOSS_CONFIG_DIR = EXTERNAL_DATA / ".emboss_home"
+EMBOSS_RC = EMBOSS_CONFIG_DIR / ".embossrc"
+
+
+def get_emboss_env() -> dict[str, str]:
+    """Retorna el entorno necesario para que EMBOSS use la base PROSITE local."""
+    EMBOSS_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    config_line = f'set emboss_data "{EMBOSS_DATA_DIR}"\n'
+    # Reescribir solo si cambió
+    if not EMBOSS_RC.exists() or EMBOSS_RC.read_text() != config_line:
+        EMBOSS_RC.write_text(config_line)
+
+    env = os.environ.copy()
+    env["EMBOSS_DATA"] = str(EMBOSS_DATA_DIR)
+    env["HOME"] = str(EMBOSS_CONFIG_DIR)
+    env["EMBOSSRC"] = str(EMBOSS_RC)
+    env.setdefault("PROSITE", str(PROSITE_WORKDIR))
+    return env
 
 
 def check_emboss_installed():
@@ -94,7 +113,7 @@ def extract_prosite():
         print("❌ Comando prosextract no disponible")
         return False
 
-    PROSITE_WORKDIR.parent.mkdir(parents=True, exist_ok=True)
+    EMBOSS_DATA_DIR.mkdir(parents=True, exist_ok=True)
     PROSITE_WORKDIR.mkdir(parents=True, exist_ok=True)
 
     import shutil
@@ -114,6 +133,11 @@ def extract_prosite():
     if not work_doc.exists():
         print("⚠️  prosite.doc no encontrado - prosextract puede fallar")
 
+    prosite_lines = PROSITE_WORKDIR / "prosite.lines"
+    if prosite_lines.exists():
+        print("ℹ️  PROSITE ya fue procesado; omitiendo prosextract.")
+        return True
+
     print(f"🔧 Preparando base de datos PROSITE con prosextract en {PROSITE_WORKDIR}...")
     try:
         subprocess.run(
@@ -121,6 +145,7 @@ def extract_prosite():
             capture_output=True,
             text=True,
             check=True,
+            env=get_emboss_env(),
         )
         print("✅ Base de datos PROSITE preparada")
         return True
@@ -187,14 +212,12 @@ def analyze_domains(fasta_file: Path, output_file: Path):
                 "-noprune",
             ]
             
-            env = os.environ.copy()
-            
             result = subprocess.run(
                 cmd,
                 capture_output=True,
                 text=True,
                 check=True,
-                env=env
+                env=get_emboss_env(),
             )
             
             # Leer resultados
@@ -293,7 +316,7 @@ def main():
     
     # Preparar PROSITE
     if not extract_prosite():
-        print("⚠️ Continuando sin prosextract (puede que funcione de todas formas)...")
+        sys.exit(1)
     
     # Analizar dominios
     if not analyze_domains(INPUT_FASTA, OUTPUT_RESULTS):
